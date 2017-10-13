@@ -1,0 +1,44 @@
+CREATE TABLE Sys_User (
+	ID INT NOT NULL AUTO_INCREMENT,
+	OpenID VARCHAR (200) NOT NULL,
+	NAME VARCHAR (200) NOT NULL,
+	Photo MEDIUMBLOB,
+	Description VARCHAR (200),
+	CreateBy VARCHAR (200),
+	CreateTime datetime,
+	PRIMARY KEY (ID)
+);
+
+CREATE TABLE Sys_Family (
+	ID INT NOT NULL AUTO_INCREMENT,
+	NAME VARCHAR (200) NOT NULL,
+	Photo MEDIUMBLOB,
+	Description VARCHAR (200),
+	Label VARCHAR (200),
+	CreateBy VARCHAR (200),
+	CreateTime datetime,
+	PRIMARY KEY (ID)
+);
+
+CREATE TABLE Sys_FamilyMember (
+	FamilyID INT NOT NULL,
+	UserID INT NOT NULL,
+	UserStatus INT
+);
+
+CREATE TABLE Sys_FamilyToolBox (
+	FamilyID INT NOT NULL,
+	ToolID INT NOT NULL,
+	State CHAR (1)
+);
+
+CREATE TABLE Sys_Tool (
+	ID INT NOT NULL AUTO_INCREMENT,
+	NAME VARCHAR (200) NOT NULL,
+	Photo MEDIUMBLOB,
+	Href VARCHAR (200),
+	Description VARCHAR (200),
+	CreateBy VARCHAR (200),
+	CreateTime datetime,
+	PRIMARY KEY (ID)
+);
