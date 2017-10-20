@@ -1,86 +1,61 @@
 package models
 
-import (
-	"errors"
-	"strconv"
+import(
+	"hometools/ht_server/entity"
+	"hometools/ht_server/dal"
 	"time"
 )
 
-var (
-	UserList map[string]*User
-)
-
-func init() {
-	UserList = make(map[string]*User)
-	u := User{"user_11111", "astaxie", "11111", Profile{"male", 20, "Singapore", "astaxie@gmail.com"}}
-	UserList["user_11111"] = &u
-}
-
 type User struct {
-	Id       string
+	Id       int64
 	Username string
-	Password string
-	Profile  Profile
+	Openid string
+	Photo  string
+	Description string
 }
+var db=dal.NewUserDal()
 
-type Profile struct {
-	Gender  string
-	Age     int
-	Address string
-	Email   string
-}
-
-func AddUser(u User) string {
-	u.Id = "user_" + strconv.FormatInt(time.Now().UnixNano(), 10)
-	UserList[u.Id] = &u
-	return u.Id
-}
-
-func GetUser(uid string) (u *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		return u, nil
+//登陆 1：成功 0：未注册 -1：拒绝
+func (this *User) Login(openid string) (int,*entity.Sys_user){
+	if len(openid)==0{
+		return -1,nil
 	}
-	return nil, errors.New("User not exists")
-}
-
-func GetAllUsers() map[string]*User {
-	return UserList
-}
-
-func UpdateUser(uid string, uu *User) (a *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		if uu.Username != "" {
-			u.Username = uu.Username
-		}
-		if uu.Password != "" {
-			u.Password = uu.Password
-		}
-		if uu.Profile.Age != 0 {
-			u.Profile.Age = uu.Profile.Age
-		}
-		if uu.Profile.Address != "" {
-			u.Profile.Address = uu.Profile.Address
-		}
-		if uu.Profile.Gender != "" {
-			u.Profile.Gender = uu.Profile.Gender
-		}
-		if uu.Profile.Email != "" {
-			u.Profile.Email = uu.Profile.Email
-		}
-		return u, nil
+	u:=this.GetUser(openid)
+	if u==nil{
+		return 0,nil
 	}
-	return nil, errors.New("User Not Exist")
+	return 1,u
 }
-
-func Login(username, password string) bool {
-	for _, u := range UserList {
-		if u.Username == username && u.Password == password {
-			return true
-		}
+func (this *User) GetUser(openid string) *entity.Sys_user{
+	return db.GetByOpenID(openid)
+}
+func (this *User) RegisterUser() error{
+	u:=entity.Sys_user{
+		Openid:this.Openid,
+		Name:this.Username,
+		Photo:this.Photo,
+		Description:this.Description,
+		Createby:"root",
+		Createtime:time.Now(),
 	}
-	return false
+	
+	id,err:= db.Add(u);
+	if err!=nil{
+		u.Id=id
+	}
+	return err
 }
-
-func DeleteUser(uid string) {
-	delete(UserList, uid)
+func (this *User) UpdateUser() error{
+	u:=entity.Sys_user{
+		Openid:this.Openid,
+		Name:this.Username,
+		Photo:this.Photo,
+		Description:this.Description,
+		Createby:"root",
+		Createtime:time.Now(),
+	}
+	return db.Update(&u)
+}
+func (this *User) GetFamilyList(userID int) *[]entity.Sys_family{
+	return db.GetFamilyList(userID)
 }
