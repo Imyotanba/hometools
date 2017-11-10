@@ -5,3 +5,7 @@ type Result struct{
 	Msg string
 	Data interface{}
 }
+func(this *Result) Success(){
+	this.Code=1
+	this.Msg="success"
+}

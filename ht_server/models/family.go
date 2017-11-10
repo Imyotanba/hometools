@@ -6,7 +6,7 @@ import(
 )
 
 type Family struct{
-	//entity.Sys_family
+	entity.Sys_family
 }
 
 //获取信息
@@ -17,9 +17,17 @@ func (this *Family) Get(id int64) *entity.Sys_family{
 	return fam
 }
 //创建
-func (this *Family) Create(mode *entity.Sys_family) error{
-	mode.Createtime=time.Now()
-	if id,err:=dal.NewFamilyDal().Add(mode);err!=nil{
+func (this *Family) Create(createby string) error{
+	mode:=entity.Sys_family{
+		Name:this.Name,
+		Photo:this.Photo,
+		Description:this.Description,
+		Label:this.Label,
+		Createby:createby,
+		Createtime:time.Now(),
+	}
+	//mode.Createtime=time.Now()
+	if id,err:=dal.NewFamilyDal().Add(&mode);err!=nil{
 		return err
 	}else{
 		mode.Id=id
@@ -27,8 +35,15 @@ func (this *Family) Create(mode *entity.Sys_family) error{
 	}
 }
 //修改
-func (this *Family) Update(mode *entity.Sys_family) error{
-	return dal.NewFamilyDal().Update(mode)
+func (this *Family) Update() error{
+	mode:=entity.Sys_family{
+		Id:this.Id,
+		Name:this.Name,
+		Photo:this.Photo,
+		Description:this.Description,
+		Label:this.Label,
+	}
+	return dal.NewFamilyDal().Update(&mode)
 }
 //删除
 func (this *Family) Delete(id int64) error{
