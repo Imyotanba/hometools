@@ -53,7 +53,7 @@ func (this *Family) Delete(id int64) error{
 	return dal.NewFamilyDal().Delete(&mode)
 }
 //获取家庭成员
-func (this *Family) Members(familyid int) *[]entity.V_Sys_FamilyUserMembers{
+func (this *Family) Members(familyid int64) *[]entity.V_Sys_FamilyUserMembers{
 	return dal.NewFamilyDal().GetMembers(familyid)
 }
 //添加一名成员
@@ -74,9 +74,3 @@ func (this *Family) RemoveMember(familyid,userid int64) error{
 	}
 	return dal.NewFamilyDal().Delete(&fm)
 }
-//获取工具列表
-/*
-func (this *Family) Tools(id int) *[]entity.Sys_tool{
-
-}
-*/

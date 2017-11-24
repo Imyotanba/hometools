@@ -15,7 +15,7 @@ func NewFamilyDal() *FamilyDal{
 }
 
 //获取家庭成员列表
-func (this *FamilyDal) GetMembers(familyid int) *[]entity.V_Sys_FamilyUserMembers{
+func (this *FamilyDal) GetMembers(familyid int64) *[]entity.V_Sys_FamilyUserMembers{
 	list:=make([]entity.V_Sys_FamilyUserMembers,0)
 	if _,err:=DbContext.QueryTable(new(entity.V_Sys_FamilyUserMembers)).Filter("FamilyID",familyid).All(&list);err!=nil{
 		this.errorHandler(err)

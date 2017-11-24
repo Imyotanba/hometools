@@ -58,3 +58,55 @@ func(this *FamilyController) Put(){
 	this.Data["json"]=result
 	this.ServeJSON()
 }
+//获取所有成员
+// @router /:id/members [get]
+func(this *FamilyController) GetMembers(){
+	id,err:=this.GetInt64(":id")
+	if(err==nil){
+		members:=new(models.Family).Members(id)
+		this.Data["json"]=members
+		this.ServeJSON()
+	}
+}
+//添加成员
+// @router /:id/members [post]
+func(this *FamilyController) AddMember(){
+	result:=models.Result{}
+	fid,err:=this.GetInt64(":id")
+	if(err!=nil){
+		return
+	}
+	userid,err:=this.GetInt64("userid")
+	if(err!=nil){
+		return
+	}
+	if err:= new(models.Family).AddMember(fid,userid);err==nil{
+		result.Success()
+	}else{
+		result.Code=0
+		result.Msg=fmt.Sprint(err)
+	}
+	this.Data["json"]=result
+	this.ServeJSON()
+}
+//移除成员
+//@router /:id/members [delete]
+func(this *FamilyController) DelMember(){
+	result:=models.Result{}
+	fid,err:=this.GetInt64(":id")
+	if(err!=nil){
+		return
+	}
+	userid,err:=this.GetInt64("userid")
+	if(err!=nil){
+		return
+	}
+	if err:= new(models.Family).RemoveMember(fid,userid);err==nil{
+		result.Success()
+	}else{
+		result.Code=0
+		result.Msg=fmt.Sprint(err)
+	}
+	this.Data["json"]=result
+	this.ServeJSON()
+}
