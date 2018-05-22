@@ -12,6 +12,10 @@ func NewUserDal() *UserDal{
 	u.tabname=new(entity.Sys_user).TableName()
 	return u
 }
+func(this *UserDal) Update(user *entity.Sys_user) error{
+	 _,err:= DbContext.Update(user,"name","photo","Description")
+	 return err
+}
 func(this *UserDal) GetByOpenID(openid string) *entity.Sys_user{
 	row:= DbContext.QueryTable(this.tabname).Filter("openid",openid)
 	user:=new(entity.Sys_user)

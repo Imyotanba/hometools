@@ -13,8 +13,11 @@ type Family struct{
 func (this *Family) Get(id int64) *entity.Sys_family{
 	fam:=new(entity.Sys_family)
 	fam.Id=id
-	dal.NewFamilyDal().Get(fam)
-	return fam
+	if err:=dal.NewFamilyDal().Get(fam);err==nil{
+		return fam
+	}else{
+		return nil
+	}
 }
 //创建
 func (this *Family) Create(createby string) error{

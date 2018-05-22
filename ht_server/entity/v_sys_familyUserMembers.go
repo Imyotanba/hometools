@@ -4,8 +4,8 @@ import(
 )
 type V_Sys_FamilyUserMembers struct{
 	Id int 
-	UseriD int
-	FamilyiD int
+	Userid int
+	Familyid int
 	Userstatus int
 	Openid string
 	Username string
@@ -15,7 +15,7 @@ type V_Sys_FamilyUserMembers struct{
 	Familyphoto string
 	Familydescription string
 	Familylabel string
-	FamilycreateBy string
+	Familycreateby string
 	Familycreatetime time.Time
 }
 func (this *V_Sys_FamilyUserMembers) TableName() string{

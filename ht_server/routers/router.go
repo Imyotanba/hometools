@@ -20,6 +20,13 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
+		beego.NSNamespace("/family",
+			beego.NSInclude(
+				&controllers.FamilyController{},
+			),
+		),
+		beego.NSRouter("/user",&controllers.UserController{}),
+		beego.NSRouter("/family",&controllers.FamilyController{}),
 	)
 	beego.AddNamespace(ns)
 }

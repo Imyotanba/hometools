@@ -16,34 +16,40 @@ func(this *FamilyController) GetFamily(){
 	id,err:=this.GetInt64(":id")
 	if(err==nil){
 		info:=new(models.Family).Get(id)
-		this.Data["json"]=info
-		this.ServeJSON()
+		Return_Json(&this.Controller,&info)
+	}else{
+		result:=models.Result{}
+		result.Error(fmt.Sprintf("error: %s",err))
+		Return_Json(&this.Controller,&result)
 	}
 }
 
 //创建
 func(this *FamilyController) Post(){
 	result:=models.Result{}
-	var fam models.Family
+	fam:= &models.Family{}
 	if err:=json.Unmarshal(this.Ctx.Input.RequestBody,fam);err!=nil{
-		result.Code=-1
-		result.Msg=fmt.Sprintf("序列化数据失败:%s",err)
-	} else{
-		createBy:=this.GetSession("CurrentUser").(models.User)
-		if err:=fam.Create(createBy.Username);err!=nil{
-			result.Code=0
-			result.Msg=fmt.Sprintf("创建失败:%s",err)
-		}else{
-			result.Success()
-		}
+		result.Error(fmt.Sprintf("序列化数据失败:%s",err))
+		Return_Json(&this.Controller,&result)
+		return
 	}
-	this.Data["json"]=result
-	this.ServeJSON()
+	createBy:=this.GetSession("CurrentUser").(models.User)
+	if(&createBy==nil){
+		result.Error("登录信息失效")
+		Return_Json(&this.Controller,&result)
+		return
+	}
+	if err:=fam.Create(createBy.Username);err!=nil{
+		result.Code=0
+		result.Msg=fmt.Sprintf("创建失败:%s",err)
+	}else{
+		result.Success()
+	}
 }
 //修改资料
 func(this *FamilyController) Put(){
 	result:=models.Result{}
-	var fam models.Family
+	fam:= &models.Family{}
 	if err:=json.Unmarshal(this.Ctx.Input.RequestBody,fam);err!=nil{
 		result.Code=-1
 		result.Msg=fmt.Sprintf("序列化数据失败:%s",err)
@@ -55,8 +61,7 @@ func(this *FamilyController) Put(){
 			result.Success()
 		}
 	}
-	this.Data["json"]=result
-	this.ServeJSON()
+	Return_Json(&this.Controller,&result)
 }
 //获取所有成员
 // @router /:id/members [get]
@@ -64,15 +69,15 @@ func(this *FamilyController) GetMembers(){
 	id,err:=this.GetInt64(":id")
 	if(err==nil){
 		members:=new(models.Family).Members(id)
-		this.Data["json"]=members
-		this.ServeJSON()
+		Return_Json(&this.Controller,&members)
 	}
 }
 //添加成员
-// @router /:id/members [post]
+// @router /members/:id [post]
 func(this *FamilyController) AddMember(){
 	result:=models.Result{}
 	fid,err:=this.GetInt64(":id")
+	fmt.Print(string(this.Ctx.Input.RequestBody))
 	if(err!=nil){
 		return
 	}
@@ -86,8 +91,7 @@ func(this *FamilyController) AddMember(){
 		result.Code=0
 		result.Msg=fmt.Sprint(err)
 	}
-	this.Data["json"]=result
-	this.ServeJSON()
+	Return_Json(&this.Controller,&result)
 }
 //移除成员
 //@router /:id/members [delete]
@@ -107,6 +111,5 @@ func(this *FamilyController) DelMember(){
 		result.Code=0
 		result.Msg=fmt.Sprint(err)
 	}
-	this.Data["json"]=result
-	this.ServeJSON()
+	Return_Json(&this.Controller,&result)
 }

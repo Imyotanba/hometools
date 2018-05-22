@@ -4,6 +4,7 @@ import(
 	"hometools/ht_server/entity"
 	"hometools/ht_server/dal"
 	"time"
+	"fmt"
 )
 
 type User struct {
@@ -39,20 +40,24 @@ func (this *User) RegisterUser() error{
 		Createtime:time.Now(),
 	}
 	
-	id,err:= db.Add(u);
+	id,err:= db.Add(&u);
 	if err!=nil{
 		u.Id=id
 	}
 	return err
 }
 func (this *User) UpdateUser() error{
+	if(this.Id==0){
+		return fmt.Errorf("数据不合法")
+	}
 	u:=entity.Sys_user{
+		Id:this.Id,
 		Openid:this.Openid,
 		Name:this.Username,
 		Photo:this.Photo,
 		Description:this.Description,
-		Createby:"root",
-		Createtime:time.Now(),
+		// Createby:"root",
+		// Createtime:time.Now(),
 	}
 	return db.Update(&u)
 }
